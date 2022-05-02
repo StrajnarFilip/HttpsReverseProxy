@@ -77,7 +77,7 @@ safe_write(nginx_default_path,f"""server {{
     # Redirect to HTTPS
     listen 80 default_server;
     server_name  _;
-    return 301 https://{certificate_domain_name};
+    return 301 "https://{certificate_domain_name}";
 }}
 """)
 
@@ -92,7 +92,7 @@ if(config_type == "proxy"):
     ssl_certificate_key /certificate/privkey.pem;
     ## Proxy to...
     location / {{
-        proxy_set_header Host https://{certificate_domain_name};
+        proxy_set_header Host "https://{certificate_domain_name}";
         proxy_pass   {location};
     }}
 }}""")
