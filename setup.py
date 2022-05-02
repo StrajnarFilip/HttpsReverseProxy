@@ -18,13 +18,12 @@ from subprocess import run
 # Example invocation:
 # python3 setup.py "my.domain.com" "my@email.com" "static"
 # python3 setup.py "my.domain.com" "my@email.com" "proxy" "http://127.0.0.1:5000"
-# python3 setup.py "my.domain.com" "my@email.com" "wordpress"
 
 # First argument is domain
 certificate_domain_name = sys.argv[1]
 # Second is email
 certificate_email = sys.argv[2]
-# Static files or proxy (static OR proxy OR wordpress)
+# Static files or proxy (static OR proxy)
 config_type = sys.argv[3]
 
 # Quickly write to a file
