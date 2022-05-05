@@ -16,7 +16,7 @@ import os
 from subprocess import run
 
 # Example invocation:
-# python3 setup.py "my.domain.com" "my@email.com" "http://127.0.0.1:5000"
+# python3 setup.py "my.domain.com" "my@email.com" "static" "http://127.0.0.1:5000"
 
 # First argument is domain
 certificate_domain_name = sys.argv[1]
@@ -50,7 +50,7 @@ services:
       - ./var:/var
       - ./certificate:/certificate
       - ./script:/script
-      - ./{static_files_directory_name}:/{static_files_directory_name}
+      - ./{static_files_directory_name}:/static-assets/{static_files_directory_name}
     environment:
       user_email: "{certificate_email}"
       user_domain: "{certificate_domain_name}"
@@ -89,7 +89,7 @@ safe_write(nginx_https_path,f"""server {{
     ssl_certificate     /certificate/fullchain.pem;
     ssl_certificate_key /certificate/privkey.pem;
     location /{static_files_directory_name} {{
-      root /{static_files_directory_name}
+      root /static-assets;
     }}
 
     ## Proxy to...
