@@ -16,15 +16,14 @@ import os
 from subprocess import run
 
 # Example invocation:
-# python3 setup.py "my.domain.com" "my@email.com" "static"
-# python3 setup.py "my.domain.com" "my@email.com" "proxy" "http://127.0.0.1:5000"
+# python3 setup.py "my.domain.com" "my@email.com" "http://127.0.0.1:5000"
 
 # First argument is domain
 certificate_domain_name = sys.argv[1]
 # Second is email
 certificate_email = sys.argv[2]
-# Static files or proxy (static OR proxy)
-config_type = sys.argv[3]
+# Third is static files directory name
+static_files_directory_name = sys.argv[3]
 
 # Quickly write to a file
 def safe_write(file_path: str, content: str):
@@ -51,6 +50,7 @@ services:
       - ./var:/var
       - ./certificate:/certificate
       - ./script:/script
+      - ./{static_files_directory_name}:/{static_files_directory_name}
     environment:
       user_email: "{certificate_email}"
       user_domain: "{certificate_domain_name}"
@@ -80,15 +80,18 @@ safe_write(nginx_default_path,f"""server {{
 }}
 """)
 
-if(config_type == "proxy"):
-    # Location, example: http://127.0.0.1:5000
-    location = sys.argv[4]
 
-    safe_write(nginx_https_path,f"""server {{
+# Location, example: http://127.0.0.1:5000
+location = sys.argv[4]
+safe_write(nginx_https_path,f"""server {{
     listen       443 ssl;
     server_name  {certificate_domain_name};
     ssl_certificate     /certificate/fullchain.pem;
     ssl_certificate_key /certificate/privkey.pem;
+    location /{static_files_directory_name} {{
+      root /{static_files_directory_name}
+    }}
+
     ## Proxy to...
     location / {{
         proxy_set_header Host "https://{certificate_domain_name}";
