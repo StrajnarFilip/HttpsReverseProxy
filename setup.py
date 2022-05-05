@@ -36,6 +36,22 @@ certificate_compose_path=os.path.join("Certbot","docker-compose.yaml")
 nginx_default_path=os.path.join("conf.d","default.conf")
 # Path to NGINX https.conf
 nginx_https_path=os.path.join("conf.d","https.conf")
+# Path to nginx docker compose
+nginx_docker_compose="docker-compose.yaml"
+
+# Render compose file for NGINX
+safe_write(nginx_docker_compose,f"""version: "3.0"
+services:
+  nginxproxy:
+    network_mode: "host"
+    image: nginx
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+    volumes:
+      - ./Certbot/certificate:/certificate
+      - ./conf.d:/etc/nginx/conf.d
+      - ./static:/static-assets/{static_files_directory_name}""")
 
 # Render appropriate docker-compose.yaml for creation of certificate
 safe_write(certificate_compose_path,f"""version: "3.0"
