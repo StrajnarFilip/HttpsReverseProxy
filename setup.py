@@ -50,7 +50,7 @@ services:
       - ./var:/var
       - ./certificate:/certificate
       - ./script:/script
-      - ./{static_files_directory_name}:/static-assets/{static_files_directory_name}
+      - ./static:/static-assets/{static_files_directory_name}
     environment:
       user_email: "{certificate_email}"
       user_domain: "{certificate_domain_name}"
